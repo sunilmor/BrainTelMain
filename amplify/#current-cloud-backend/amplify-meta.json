@@ -1,0 +1,58 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-brainintelproject-dev-50421-authRole",
+      "UnauthRoleArn": "arn:aws:iam::260467346373:role/amplify-brainintelproject-dev-50421-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::260467346373:role/amplify-brainintelproject-dev-50421-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-brainintelproject-dev-50421-deployment",
+      "UnauthRoleName": "amplify-brainintelproject-dev-50421-unauthRole",
+      "StackName": "amplify-brainintelproject-dev-50421",
+      "StackId": "arn:aws:cloudformation:ap-south-1:260467346373:stack/amplify-brainintelproject-dev-50421/9c2092a0-10ff-11ef-8ea9-06f6c0cda6be",
+      "AmplifyAppId": "d1oh5dla7p3btv"
+    }
+  },
+  "auth": {
+    "brainintelproject7ae96eea": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-brainintelproject-dev-50421-deployment/amplify-cfn-templates/auth/brainintelproject7ae96eea-cloudformation-template.json",
+        "logicalId": "authbrainintelproject7ae96eea"
+      },
+      "lastPushTimeStamp": "2024-05-13T08:10:10.851Z",
+      "output": {
+        "UserPoolId": "ap-south-1_k5nUac4Bx",
+        "AppClientIDWeb": "3p3am77o728vl6l9u9qq59tmpp",
+        "AppClientID": "14mejh7491cceasrftr3sd114d",
+        "IdentityPoolId": "ap-south-1:9ed22e29-51b1-4d95-84a6-e10ab74b8ce3",
+        "UserPoolArn": "arn:aws:cognito-idp:ap-south-1:260467346373:userpool/ap-south-1_k5nUac4Bx",
+        "IdentityPoolName": "brainintelproject7ae96eea_identitypool_7ae96eea__dev",
+        "UserPoolName": "brainintelproject7ae96eea_userpool_7ae96eea"
+      },
+      "lastPushDirHash": "ISZlXbjvlHsUE5gZKtb9GD/WaYw="
+    }
+  }
+}
