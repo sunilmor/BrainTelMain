@@ -5,6 +5,9 @@ import { fetchAuthSession, getCurrentUser, signIn, signOut, verifyTOTPSetup, sig
 import { Amplify } from 'aws-amplify';
 import awsconfig from '../aws-exports';
 import {withAuthenticator } from '@aws-amplify/ui-react'
+import { confirmResetPassword } from 'aws-amplify/auth';
+
+import { resetPassword as awsResetPassword  } from 'aws-amplify/auth';
 Amplify.configure(awsconfig);
 
 function decodeJWT(token) {
@@ -28,7 +31,7 @@ export const login = async (username, password) => {
   );
   */
 
-  debugger;
+ 
 
   const response = await signIn({ username: username, password: password});
   console.log(response);
@@ -48,7 +51,14 @@ export const login = async (username, password) => {
     // }
 
     result = username;
+    if(response.isSignedIn){
+      const userObject = { userId: username, userInfo: "" };
+      localStorage.setItem('userObject', JSON.stringify(userObject));
+
+    }
   } else {
+    const userObject = { userId: "", userInfo: "" };
+    localStorage.setItem('userObject', JSON.stringify(userObject));
     result = 'Invalid username and password';
   }
 
@@ -56,26 +66,24 @@ export const login = async (username, password) => {
 };
 
 export const verifyEmail = async (email, verificationCode) => {
-  debugger;
   const response =await confirmSignUp({
     username: email,
     confirmationCode: verificationCode
   });
-
-  
-            //setMessage("Email verification successful. You can now sign in.");
-  // const response = await axios.get(
-  //   `https://dqxrg92yu7.execute-api.ap-south-1.amazonaws.com/prod/email-verification`,
-  //   {
-  //     params: {
-  //       token: token,
-  //     },
-  //   }
-  // );
-
-  
   return response;
 };
+
+// Define the handleConfirmResetPassword function
+
+export const handleConfirmResetPassword = async ( username,confirmationCode,  newPassword ) => {
+  try {
+    debugger;
+    await confirmResetPassword({username,confirmationCode,  newPassword });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 export const register = async (email, firstName, lastName, password) => {
   
@@ -89,7 +97,6 @@ export const register = async (email, firstName, lastName, password) => {
     }
 });
   
-debugger;
 
   
   
@@ -117,6 +124,20 @@ debugger;
   return result;
 };
 
+
+
+
+export const resetPassword = async function handleResetPassword(username) {
+  try {
+    debugger;
+    const output = await awsResetPassword({ username });
+    handleResetPasswordNextSteps(output);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 export const forgotPassowrd = async (email) => {
   let forgotPassowrdResponse;
   // const response = await axios.post(`${host}users/password-reset-request`, {
@@ -129,18 +150,14 @@ export const forgotPassowrd = async (email) => {
     }
   );
   */
-  debugger;
   const response = await resetPassword({ email });
   forgotPassowrdResponse =handleResetPasswordNextSteps(response);
-
-  debugger;
   return forgotPassowrdResponse;
 };
 
 function handleResetPasswordNextSteps(output) {
   const { nextStep } = output;
   let forgotPassowrdResponse1;
-  debugger;
   switch (nextStep.resetPasswordStep) {
     case 'CONFIRM_RESET_PASSWORD_WITH_CODE':
       const codeDeliveryDetails = nextStep.codeDeliveryDetails;
@@ -155,17 +172,17 @@ function handleResetPasswordNextSteps(output) {
 }
 
 
-export const resetPassword = async (token, newPassword) => {
-  // const response = await axios.post(
-  //   `https://dqxrg92yu7.execute-api.ap-south-1.amazonaws.com/prod/password-reset`,
-  //   {
-  //     token: token,
-  //     password: newPassword,
-  //   }
-  // );
-  console.log('response');
-  //console.log(response);
-};
+// export const resetPassword = async (token, newPassword) => {
+//   // const response = await axios.post(
+//   //   `https://dqxrg92yu7.execute-api.ap-south-1.amazonaws.com/prod/password-reset`,
+//   //   {
+//   //     token: token,
+//   //     password: newPassword,
+//   //   }
+//   // );
+//   console.log('response');
+//   //console.log(response);
+// };
 
 export const isAuthenticated = () => {
   const user = localStorage.getItem('userObject');
