@@ -7,11 +7,13 @@ import { useEffect, useState } from 'react';
 import AWS from 'aws-sdk';
 import Header from '../Header/Header';
 import Footer from './Footer.js';
+import jsPDF from 'jspdf';
 
 let mediaRecorder;
 let audioCtx;
 
 function RecorderPage() {
+
   const [state, setState] = useState({
     startAnalysis: true,
     recording: false,
@@ -177,6 +179,7 @@ function RecorderPage() {
         console.log(err, err.stack);
       } else {
         console.log('success');
+        createPdf(folderName,name)
       }
     });
     setState((state) => ({
@@ -186,6 +189,37 @@ function RecorderPage() {
     }));
   };
 
+  const createPdf = (folderName,name) => {
+    debugger;
+    const userInfo = getUserInfo();
+    let id = userInfo?.userId;
+    const doc = new jsPDF();
+    doc.text(`Hello ${id}`, 10, 10);
+    doc.text('This is a sample PDF file.', 10, 20);
+
+    // Save the PDF
+    const pdfBlob = doc.output('blob');
+    var params = {
+      // Body: state.audioFile,
+      Bucket: albumBucketName,
+      Key: `${folderName}/${name + '.pdf'}`,
+      // Key: name + '.wav',
+      Body: pdfBlob,
+      ContentType: 'application/pdf',
+    };
+    s3.putObject(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack);
+      } else {
+        console.log('success');
+      }
+    });
+    setState((state) => ({
+      ...state,
+      completed: false,
+      submitted: true,
+    }));
+  };
   const getUserInfo = () => {
     return JSON.parse(localStorage.getItem('userObject'));
   };
@@ -229,10 +263,13 @@ function RecorderPage() {
   };
 
   const [result, setResult] = useState([]);
+  const [s3Files, s3SetFiles] = useState([]);
   const checkResults = () => {
+    debugger;
     const userInfo = getUserInfo();
     let id = userInfo?.userId;
-    s3.listObjects({ Prefix: id }, function (err, data) {
+    const folderName = getUserFolderName();
+    s3.listObjects({ Prefix: folderName }, function (err, data) {
       if (err) {
         return alert(
           'There was a brutal error viewing your album: ' + err.message
@@ -243,7 +280,10 @@ function RecorderPage() {
 
         let r = [];
         data.Contents.map((val) => {
-          if (val.Key.includes('.pdf')) {
+          // if (val.Key.includes('.pdf')) {
+          //   r.push(val.Key);
+          // }
+          if (val.Key) {
             r.push(val.Key);
           }
         });
@@ -285,22 +325,20 @@ function RecorderPage() {
   };
 
   const onButtonClick = (key) => {
-    s3.getObject({ Key: key }, function (err, data) {
+    debugger;
+    // Parameters for downloading object
+    const params = {
+      Bucket: albumBucketName,
+      Key: key,
+    };
+
+    // Generate a pre-signed URL for the object
+    s3.getSignedUrl('getObject', params, (err, url) => {
       if (err) {
-        return alert('There was an error viewing your album: ' + err.message);
+        console.error('Error', err);
       } else {
-        var blobStore = new Blob([data.Body], { type: 'application/pdf' });
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(blobStore);
-          return;
-        }
-        var data = window.URL.createObjectURL(blobStore);
-        var link = document.createElement('a');
-        document.body.appendChild(link);
-        link.href = data;
-        link.download = key + '.pdf';
-        link.click();
-        window.URL.revokeObjectURL(data);
+        // Download the object using the generated URL
+        window.open(url, '_blank');
       }
     });
   };
@@ -455,15 +493,15 @@ function RecorderPage() {
                     <p>
                       {' '}
                       Here is the link to
-                      <a
-                        href={r}
+                      <label className="custLabel"
                         onClick={() => {
                           onButtonClick(r);
-                        }}
+                        }
+                      }
                       >
                         {' '}
                         {r}
-                      </a>
+                      </label>
                     </p>
                   );
                 })}

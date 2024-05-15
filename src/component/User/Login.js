@@ -48,12 +48,15 @@ const Login = () => {
 
   const redirectAuthenticator = async (e) => {
     e.preventDefault();
+   
 
     try {
       setError('');
       await login(username, password);
       navigate('/record');
+      localStorage.setItem('login',true);
     } catch (error) {
+      localStorage.setItem('login','');
       if (username.length === 0 || password.length === 0) {
         setError('Please fill in both the fields');
       } else {
