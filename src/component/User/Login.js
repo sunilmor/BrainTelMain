@@ -17,9 +17,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PrimaryButton from '../../layout/Buton/PrimaryButton';
 import StyledInput from '../../layout/TextInput';
 import config from '../../translation/config';
-import { login } from '../../service/Authservice';
+import { login,handleSignOut } from '../../service/Authservice';
 import {withAuthenticator } from '@aws-amplify/ui-react';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+
 
 import './Login.scss';
 
@@ -29,11 +30,16 @@ const Login = () => {
   const [password, setpassword] = React.useState('');
   const [error, setError] = React.useState('');
   const [page, setPage] = React.useState('login');
+  const [isChecked, setChecked] = React.useState(false);
+
 
   localStorage.clear();
+  handleSignOut();
   React.useEffect(() => {
     setError(false);
   }, []);
+
+
 
   const navigate = useNavigate();
 
@@ -49,14 +55,15 @@ const Login = () => {
 
   const redirectAuthenticator = async (e) => {
     e.preventDefault();
-   
-
+    
+    setChecked(true);
     try {
       setError('');
       await login(username, password);
       navigate('/record');
       localStorage.setItem('login',true);
     } catch (error) {
+      setChecked(false);
       localStorage.setItem('login','');
       if (username.length === 0 || password.length === 0) {
         setError('Please fill in both the fields');
@@ -146,9 +153,11 @@ const Login = () => {
                 variant="contained"
                 className="buttonPrimarylogin"
                 onClick={redirectAuthenticator}
+                disabled={isChecked}
               >
                 {config.loginButton}
               </PrimaryButton>
+              
             </Typography>
             <div className="no-account" onClick={redirectRegister}>
               {' '}

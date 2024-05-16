@@ -4,6 +4,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import './Header.scss';
+import { handleSignOut } from '../../service/Authservice';
+import EditOffSharpIcon from '@mui/icons-material/EditOffSharp';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ const Header = () => {
 
   const onCloseHandler = () => {
     navigate('/login');
+    handleSignOut();
     setOpen(false);
     // localStorage.removeItem('userObject');
     // localStorage.removeItem('user');
@@ -20,6 +23,10 @@ const Header = () => {
     // localStorage.removeItem('userInfo');
     localStorage.clear();
 
+  };
+
+  const updatePassword = () => {
+    navigate('/update');
   };
 
   const [user, setUser] = useState();
@@ -63,6 +70,10 @@ const Header = () => {
             &nbsp;&nbsp;<span>{user?.userId}</span>
           </button>
           {/* <div className="user-text"> <MailOutlineIcon /> <span>{user?.userId}</span></div> */}
+          <button className="logout-button" onClick={() => updatePassword()}>
+            <EditOffSharpIcon />
+            &nbsp;&nbsp;<span>Update Password</span>
+          </button>
           <button className="logout-button" onClick={() => onCloseHandler()}>
             <LogoutIcon />
             &nbsp;&nbsp;<span>Log out</span>
