@@ -7,6 +7,7 @@ const config = {
     'how the system processes your personal data, please click on our ',
   loginPrivacyPOlicy: 'Privacy Policy',
   loginAccount: "Don't have an account?",
+  updatelogin:"Go to Login",
   loginContactUS: 'Register here',
   loginForgotPassword: 'Forgot Password?',
   loginRedirect: 'Back to Login',
@@ -22,6 +23,8 @@ const config = {
   resetPasswordContinued:
     'us. You will receive a link to create a new password via email.',
   resetButton: 'Reset',
+  resendOtp:'Resend OTP',
+  updatepassword:'Update Password',
   resetBack: 'Back to login',
   instructions: 'Instructions have been sent',
   instrcutionsNote:
@@ -64,6 +67,8 @@ const config = {
   confirmationAuth:
     'Open the Microsoft Authenticator app on your smartphone and enter the one-time password code',
   Help: 'Help',
+  updatePassword: 'Password have been updated',
+  onupdatePasswordLogin: 'Login',
 };
 
 export default config;
