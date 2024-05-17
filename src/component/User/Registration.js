@@ -68,7 +68,7 @@ const Registration = (props) => {
     setErrorMailMessage('');
     setSignupErrormsg('');
     setSignupErrormsgShow('');
-    
+
   }, []);
   const validateEmail = (email) => {
     return String(email)
@@ -104,6 +104,7 @@ const Registration = (props) => {
   /* registration*/
   const signUp = async (ev) => {
     ev.preventDefault();
+    
     try {
       checkValidation();
       await register(email, firstName, lastName, password);
@@ -112,10 +113,11 @@ const Registration = (props) => {
       //setPage('link');
 
       navigate('/Instruction');
-      
+
     } catch (err) {
       console.error('error', err);
-      setSignupErrormsg(err.response.data.message);
+      setSignupErrormsgShow(true);
+      setSignupErrormsg(err.message);
     }
   };
 
@@ -135,6 +137,13 @@ const Registration = (props) => {
     localStorage.setItem('registration', JSON.stringify(email));
   }, [email]);
 
+  const handleKeyDown = (event) => {
+    if(event.keyCode==32){
+      event.preventDefault();
+    }
+    
+};
+
   return (
     <Grid xs={12} sm={6}>
       <Typography>
@@ -150,7 +159,7 @@ const Registration = (props) => {
         <Typography mt={2}>
           <p
             style={{
-              fontSize: 'small',
+              fontSize: 'medium',
               color: 'red',
               justifyContent: 'center',
               display: 'flex',
@@ -178,6 +187,7 @@ const Registration = (props) => {
           id="outlined-basic"
           label="First Name"
           variant="outlined"
+          onKeyDown={handleKeyDown}
           onChange={(ev) => setFirstName(ev.target.value)}
           value={firstName}
           required
@@ -188,6 +198,7 @@ const Registration = (props) => {
           id="outlined-basic"
           label="Last Name"
           variant="outlined"
+          onKeyDown={handleKeyDown}
           onChange={(ev) => setLastName(ev.target.value)}
           value={lastName}
           required
@@ -213,6 +224,7 @@ const Registration = (props) => {
           label="Email"
           variant="outlined"
           onChange={(ev) => setEmail(ev.target.value)}
+          onKeyDown={handleKeyDown}
           value={email}
           required
         />
@@ -234,6 +246,7 @@ const Registration = (props) => {
           id="outlined-basic-password1"
           label="Password"
           variant="outlined"
+          onKeyDown={handleKeyDown}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -245,6 +258,9 @@ const Registration = (props) => {
                 )}
               </InputAdornment>
             ),
+            inputProps: {
+              maxLength: config.passwordmaxlenght
+            }
           }}
           onChange={(ev) => setpassword(ev.target.value)}
           value={password}
@@ -252,6 +268,7 @@ const Registration = (props) => {
         />
       </Typography>
 
+      
       <Typography sx={{ justifyContent: 'center', display: 'flex' }} mt={2}>
         <div className="tacbox">
           <input
@@ -305,7 +322,7 @@ const Registration = (props) => {
           X
         </div>
         <Document
-          file={Pdf}
+          file='https://amplify-brainintelproject-dev-50421-deployment.s3.ap-south-1.amazonaws.com/ConsentFormat.pdf'
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={console.error}
         >

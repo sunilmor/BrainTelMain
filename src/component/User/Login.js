@@ -68,7 +68,8 @@ const Login = () => {
       if (username.length === 0 || password.length === 0) {
         setError('Please fill in both the fields');
       } else {
-        setError('Invalid Credentials');
+        setError(error.message);
+        // setError('Invalid Credentials');
       }
 
       console.error('error', error);
@@ -78,6 +79,13 @@ const Login = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  const handleKeyDown = (event) => {
+    if(event.keyCode==32){
+      event.preventDefault();
+    }
+    
+};
   return (
     <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
       <Grid container spacing={2}>
@@ -101,8 +109,9 @@ const Login = () => {
                 value={username}
                 required
                 onChange={(ev) => setUserName(ev.target.value)}
+                onKeyDown={handleKeyDown}
                 InputProps={{
-                  endAdornment: <InputAdornment />,
+                  endAdornment: <InputAdornment />
                 }}
               />
              
@@ -116,6 +125,7 @@ const Login = () => {
                 label="Password"
                 variant="outlined"
                 type={showPassword ? 'text' : 'password'}
+                onKeyDown={handleKeyDown}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -126,6 +136,9 @@ const Login = () => {
                       )}
                     </InputAdornment>
                   ),
+                  inputProps: {
+                    maxLength: config.passwordmaxlenght
+                  }
                 }}
                 onChange={(ev) => setpassword(ev.target.value)}
                 value={password}
